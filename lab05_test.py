@@ -9,20 +9,17 @@ import tempfile
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-
 def run(script, *args):
     result = subprocess.run(
         [sys.executable, os.path.join(HERE, script), *args],
         capture_output=True, text=True)
     return result.stdout
 
-
 def write_temp(content, suffix):
     fd, path = tempfile.mkstemp(suffix=suffix, text=True)
     with os.fdopen(fd, "w") as f:
         f.write(content)
     return path
-
 
 def test_find_matches():
     path = write_temp("apple\nBanana\ncherry\napple pie\n", ".txt")
@@ -32,14 +29,12 @@ def test_find_matches():
     finally:
         os.remove(path)
 
-
 def test_find_ignore_case():
     path = write_temp("apple\nBanana\nBANANA split\n", ".txt")
     try:
         assert run("find.py", "-i", "banana", path) == "2: Banana\n3: BANANA split\n"
     finally:
         os.remove(path)
-
 
 # STRETCH (optional) - skipping filter_csv.py still passes the two tests above.
 def test_filter_csv():
